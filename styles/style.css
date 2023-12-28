@@ -204,7 +204,7 @@ header .navbar-brand {
   letter-spacing: 3px;
 }
 .main_area .wedding_area .title {
-  font-size: 2.5rem;
+  font-size: 2rem;
 }
 .main_area .main_title .p {
   font-size: 1.5rem;
@@ -474,6 +474,10 @@ header .navbar-brand {
   transition: transform 0.8s;
   -webkit-transition: transform 0.8s;;
 }
+
+.flip-card-inner-none {
+  height: fit-content;
+}
 .flip-card:hover .flip-card-inner {
   transform: rotateY(180deg);
   -webkit-transform: rotateY(180deg);
@@ -739,4 +743,28 @@ button#btn-submit-comment:hover {
 .contact-section .contact-box > div {
   width: 40%;
   max-width: 184px;
+}
+
+.timeline-section {
+  position: relative;
+}
+
+.timeline .timeline__line {
+  position: absolute;
+}
+
+.couple-section {
+  width: 100%;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+}
+
+.couple-section .section-title {
+  
+}
+
+.couple-section .wrap-people {
+  width: 100%;
+  height: fit-content;
 }
