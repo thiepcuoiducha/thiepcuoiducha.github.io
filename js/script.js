@@ -82,13 +82,10 @@
                     success: function (res) {
                         $( "#loader").hide();
                         if(res && res["result"] == "success"){
-                            var message = '<div class="box-comment p-3 mb-3"><h4 id="user-name-comment">' + 
-                                processXSS(data.customer_name) + 
-                                '</h4><p id="comment-detail" class="m-0">' + 
-                                processXSS(data.customer_wishes) + 
-                                '</p></div>';
-                            $('#show-comments').scrollTop(0);
-                            $('#show-comments').prepend(message);
+                            renderComment({
+                                customer_name: data.customer_name,
+                                customer_wishes: data.customer_wishes,
+                            });
                             $( "#success").html(res.message).slideDown( "slow" );
                             setTimeout(function() {
                                 $( "#success").slideUp( "slow" );
@@ -152,25 +149,26 @@
 var processXSS = function (val) {  
     return (val || '').replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
 }
+const renderComment = function({customer_name, customer_wishes}, options) {
+    var message = '<div class="box-comment p-3 mb-3 ' + (options?.cls || '') + '"><h4 class="user-name-comment">' + 
+        processXSS(customer_name) + 
+        '</h4><p class="comment-detail" class="m-0">' + 
+        processXSS(customer_wishes) + 
+        '</p></div>';
+    $('#show-comments').scrollTop(0);
+    $('#show-comments').prepend(message);
+}
 
 $(document).ready(function() {
     const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
 	const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl));
 
-    const addComment = function({customer_name, message}, options) {
-        var message = '<div class="box-comment p-3 mb-3 ' + (options?.cls || '') + '"><h4 id="user-name-comment">' + 
-            processXSS(customer_name) + 
-            '</h4><p id="comment-detail" class="m-0">' + 
-            processXSS(message) + 
-            '</p></div>';
-        $('#show-comments').scrollTop(0);
-        $('#show-comments').prepend(message);
-    }
-
     const url = window.__config?.submitUrl;
     if (url) {
+        const emptyCmt = { customer_name: '', message: '' };
         $('#show-comments').empty();
-        addComment({ cls: 'loading', customer_name: '', message: '' });
+        renderComment(emptyCmt, {cls: 'loading'});
+        renderComment(emptyCmt, {cls: 'loading'});
         $.ajax({
             url: url,
             method: "GET",
@@ -183,7 +181,10 @@ $(document).ready(function() {
                 if(res && res["result"] == "success"){
                     const comments = res.data || [];
                     comments.forEach(cmt => {
-                        cmt && addComment(cmt);
+                        cmt && renderComment({
+                            ...cmt,
+                            customer_wishes: cmt.message,
+                        });
                     })
                 }
             },

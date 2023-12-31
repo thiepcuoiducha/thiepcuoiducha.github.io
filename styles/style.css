@@ -731,8 +731,26 @@ button#btn-submit-comment:hover {
   background-color: white;
 }
 
-.box-comment.loading {
-  
+.box-comment.loading .user-name-comment{
+  animation: skeleton-loading 1s linear infinite alternate;
+  height: 24px;
+  width: 30%;
+  border-radius: 4px;
+}
+
+.box-comment.loading .comment-detail {
+  animation: skeleton-loading 1s linear infinite alternate;
+  height: 64px;
+  border-radius: 4px;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-color: hsl(200, 20%, 80%);
+  }
+  100% {
+    background-color: hsl(200, 20%, 95%);
+  }
 }
 
 .reply-comment-box {
