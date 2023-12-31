@@ -794,3 +794,36 @@ button#btn-submit-comment:disabled {
   width: 100%;
   height: fit-content;
 }
+
+.my-toast {
+  display: flex;
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  overflow: hidden;
+  background: #fff;
+  width: 80%;
+  max-width: 482px;
+  padding: 16px;
+  border-radius: 4px;
+}
+
+.my-toast .my-toast__message {
+  width: calc(100% - 24px);
+  padding-left: 12px;
+  display: flex;
+}
+
+.my-toast .my-toast__icon {
+  width: 24px;
+}
+
+.my-toast#success .my-toast__icon {
+  color: green;
+}
+
+.my-toast#error .my-toast__icon {
+  color: red;
+}

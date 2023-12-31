@@ -73,8 +73,14 @@
                     attend_status: $('input[name="attend_status"]:checked').val(),
                 }
 
+                if (!data.customer_name?.trim()) {
+                    showToastError('Hãy nhập tên của bạn để gửi lời chúc');
+                    return;
+                }
+
                 $("#loader").css("display", "inline-block");
                 $('#btn-submit-comment').attr('disabled', true);
+                $('#btn-submit-comment').text('Đang gửi lời chúc...');
                 $.ajax({
                     url: submitUrl,
                     method: "GET",
@@ -88,27 +94,20 @@
                                 customer_name: data.customer_name,
                                 customer_wishes: data.customer_wishes,
                             });
-                            $( "#success").html(res.message).slideDown( "slow" );
-                            setTimeout(function() {
-                                $( "#success").slideUp( "slow" );
-                            }, 5000);
+                            $('#btn-submit-comment').text('Lời chúc của bạn đã được gửi');
+                            showToastSuccess(res.message || 'Gửi lời chúc thành công');
                         }else{
-                            $( "#error").html(res && res.message).slideDown( "slow" );
-                            setTimeout(function() {
-                                $( "#error").slideUp( "slow" );
-                            }, 5000);
-                            $('#btn-submit-comment').attr('disabled', false)
+                            showToastError(res && res.message);
+                            $('#btn-submit-comment').attr('disabled', false);
+                            $('#btn-submit-comment').text('Gửi lời chúc');
                         }
-
-                        // form.reset();
+                        form.reset();
                     },
                     error: function() {
                         $( "#loader").hide();
-                        $( "#error").slideDown( "slow" );
-                        $('#btn-submit-comment').attr('disabled', false)
-                        setTimeout(function() {
-                            $( "#error").slideUp( "slow" );
-                        }, 5000);
+                        showToastError();
+                        $('#btn-submit-comment').attr('disabled', false);
+                        $('#btn-submit-comment').text('Gửi lời chúc');
                     }
                 });
                 return false;
@@ -161,6 +160,26 @@ const renderComment = function({customer_name, customer_wishes}, options) {
         '</p></div>';
     $('#show-comments').scrollTop(0);
     $('#show-comments').prepend(message);
+}
+
+const showToastError = function(message) {
+    message = message || 'Có lỗi xảy ra';
+    $( "#error .my-toast__message").html(message);
+    $( "#error").slideDown( "slow" );
+    window.__timeoutToastError && clearTimeout(window.__timeoutToastError);
+    window.__timeoutToastError = setTimeout(function() {
+        $( "#error").slideUp( "slow" );
+    }, 5000);
+}
+
+const showToastSuccess = function(message) {
+    message = message || 'Thành công';
+    $( "#success .my-toast__message").html(message);
+    $( "#success").slideDown( "slow" );
+    window.__timeoutToastSuccess && clearTimeout(window.__timeoutToastSuccess);
+    window.__timeoutToastSuccess = setTimeout(function() {
+        $( "#success").slideUp( "slow" );
+    }, 5000);
 }
 
 $(document).ready(function() {
