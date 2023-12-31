@@ -74,6 +74,7 @@
                 }
 
                 $("#loader").css("display", "inline-block");
+                $('#btn-submit-comment').attr('disabled', true);
                 $.ajax({
                     url: submitUrl,
                     method: "GET",
@@ -83,6 +84,7 @@
                         $( "#loader").hide();
                         if(res && res["result"] == "success"){
                             renderComment({
+                                send_time: new Date().toISOString(),
                                 customer_name: data.customer_name,
                                 customer_wishes: data.customer_wishes,
                             });
@@ -95,13 +97,15 @@
                             setTimeout(function() {
                                 $( "#error").slideUp( "slow" );
                             }, 5000);
+                            $('#btn-submit-comment').attr('disabled', false)
                         }
 
-                        form.reset();
+                        // form.reset();
                     },
                     error: function() {
                         $( "#loader").hide();
                         $( "#error").slideDown( "slow" );
+                        $('#btn-submit-comment').attr('disabled', false)
                         setTimeout(function() {
                             $( "#error").slideUp( "slow" );
                         }, 5000);
@@ -165,10 +169,10 @@ $(document).ready(function() {
 
     const url = window.__config?.submitUrl;
     if (url) {
-        const emptyCmt = { customer_name: '', message: '' };
-        $('#show-comments').empty();
-        renderComment(emptyCmt, {cls: 'loading'});
-        renderComment(emptyCmt, {cls: 'loading'});
+        // const emptyCmt = { customer_name: '', message: '' };
+        // $('#show-comments').empty();
+        // renderComment(emptyCmt, {cls: 'loading'});
+        // renderComment(emptyCmt, {cls: 'loading'});
         $.ajax({
             url: url,
             method: "GET",
@@ -180,9 +184,8 @@ $(document).ready(function() {
                 $('#show-comments').empty();
                 if(res && res["result"] == "success"){
                     const comments = res.data || [];
-                    comments.forEach(cmt => {
-                        cmt && renderComment(cmt);
-                    })
+                    comments.sort((a, b) => b?.send_time < a?.send_time ? 1 : -1)
+                        .forEach(cmt => cmt && renderComment(cmt));
                 }
             },
             error: function() {

@@ -561,7 +561,7 @@ header .navbar-brand {
   color: #fff;
 }
 
-.wishes-section button:hover,
+.wishes-section button:hover:not(:disabled),
 .event-section a:hover {
   opacity: 0.6 !important;
   background-color: #eeaaba !important;
@@ -721,8 +721,12 @@ button#btn-submit-comment {
   font-weight: 400;
   text-transform: uppercase;
 }
-button#btn-submit-comment:hover {
+button#btn-submit-comment:hover:not(:disabled) {
   background-color: #F3DFE4;
+}
+button#btn-submit-comment:disabled {
+  background-color: #d9d6d6 !important;
+  cursor: default !important;
 }
 #show-comments {
   background-color: #f3dfe4;
