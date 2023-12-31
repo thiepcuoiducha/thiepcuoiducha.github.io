@@ -181,10 +181,7 @@ $(document).ready(function() {
                 if(res && res["result"] == "success"){
                     const comments = res.data || [];
                     comments.forEach(cmt => {
-                        cmt && renderComment({
-                            ...cmt,
-                            customer_wishes: cmt.message,
-                        });
+                        cmt && renderComment(cmt);
                     })
                 }
             },
