@@ -729,8 +729,12 @@ button#btn-submit-comment:hover {
 }
 .box-comment {
   background-color: white;
- 
 }
+
+.box-comment.loading {
+  
+}
+
 .reply-comment-box {
   border-top: 1px dashed #ef9daf;
 }

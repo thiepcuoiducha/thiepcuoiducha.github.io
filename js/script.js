@@ -72,9 +72,6 @@
                     customer_wishes: $('textarea[name="customer_wishes"]').val() || '',
                     attend_status: $('input[name="attend_status"]:checked').val(),
                 }
-                var processXSS = function (val) {  
-                    return (val || '').replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
-                }
 
                 $("#loader").css("display", "inline-block");
                 $.ajax({
@@ -152,7 +149,49 @@
 
 })(window.jQuery);
 
+var processXSS = function (val) {  
+    return (val || '').replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+}
+
 $(document).ready(function() {
     const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
 	const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl));
+
+    const addComment = function({customer_name, message}, options) {
+        var message = '<div class="box-comment p-3 mb-3 ' + (options?.cls || '') + '"><h4 id="user-name-comment">' + 
+            processXSS(customer_name) + 
+            '</h4><p id="comment-detail" class="m-0">' + 
+            processXSS(message) + 
+            '</p></div>';
+        $('#show-comments').scrollTop(0);
+        $('#show-comments').prepend(message);
+    }
+
+    const url = window.__config?.submitUrl;
+    if (url) {
+        $('#show-comments').empty();
+        addComment({ cls: 'loading', customer_name: '', message: '' });
+        $.ajax({
+            url: url,
+            method: "GET",
+            dataType: "json",
+            data: {
+                mode: 'view',
+            },
+            success: function (res) {
+                $('#show-comments').empty();
+                if(res && res["result"] == "success"){
+                    const comments = res.data || [];
+                    comments.forEach(cmt => {
+                        cmt && addComment(cmt);
+                    })
+                }
+            },
+            error: function() {
+                // error
+                $('#show-comments').empty();
+            }
+        });
+    }
+    
 });
